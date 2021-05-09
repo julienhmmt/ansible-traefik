@@ -1,0 +1,20 @@
+---
+
+galaxy_info:
+  author: Julien HOMMET
+  description: Ansible role to install traefik from official GitHub repository, with simple configuration.
+  license: CC BY-NC-ND
+
+  min_ansible_version: 2.9
+
+  role_name: install-traefik
+
+  platforms:
+    - name: Debian
+      versions:
+        - 10
+    - name: Ubuntu
+      versions:
+        - 20.04
+
+  dependencies: []

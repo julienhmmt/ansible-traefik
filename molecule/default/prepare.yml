@@ -1,0 +1,14 @@
+---
+
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: (sys) update host apt cache
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: python3-minimal for ansible
+      shell: "test -e /usr/bin/python3 || (apt update -y && apt install python3-minimal --no-install-recommends)"
+      changed_when: false

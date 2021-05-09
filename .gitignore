@@ -1,0 +1,8 @@
+*.retry
+*/__pycache__
+*.pyc
+.cache
+*.swp
+*.swo
+*~
+.tox

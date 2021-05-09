@@ -1,0 +1,4 @@
+---
+
+- name: Converge
+  import_playbook: ../../tasks/main.yml
