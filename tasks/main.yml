@@ -1,105 +1,97 @@
 ---
 # tasks/main.yml
 
-- name: Install Traefik with its binary from official GitHub repository
-  hosts: all
-  become: true
-  vars:
-    traefik_version: "2.4.8"
-    traefik_log_file: "/var/log/traefik.log"
+- name: (sys) update host apt cache
+  apt:
+    update_cache: true
+    cache_valid_time: 3600
 
-  tasks:
-    - name: (sys) update host apt cache
-      apt:
-        update_cache: true
-        cache_valid_time: 3600
+- name: (sys) install sys tools
+  apt:
+    name: "{{ item }}"
+    state: present
+    install_recommends: false
+  loop:
+    - tar
+    - curl
 
-    - name: (sys) install sys tools
-      apt:
-        name: "{{ item }}"
-        state: present
-        install_recommends: false
-      loop:
-        - tar
-        - curl
+- name: (sys) create traefik system group
+  group:
+    name: "traefik"
+    system: "true"
+    state: present
 
-    - name: (sys) create traefik system group
-      group:
-        name: "traefik"
-        system: "true"
-        state: present
+- name: (sys) create traefik system user
+  user:
+    name: "traefik"
+    system: "true"
+    shell: "/usr/sbin/nologin"
+    group: "traefik"
+    createhome: "false"
+    home: "/etc/traefik"
 
-    - name: (sys) create traefik system user
-      user:
-        name: "traefik"
-        system: "true"
-        shell: "/usr/sbin/nologin"
-        group: "traefik"
-        createhome: "false"
-        home: "/etc/traefik"
+- name: (sys) download traefik sources
+  get_url:
+    url: "https://github.com/traefik/traefik/releases/download/v{{ traefik_version }}/traefik_v{{ traefik_version }}_linux_amd64.tar.gz"
+    dest: "/tmp/traefik_{{ traefik_version }}.tar.gz"
+  register: traefik_source
 
-    - name: (sys) download traefik sources
-      get_url:
-        url: "https://github.com/traefik/traefik/releases/download/v{{ traefik_version }}/traefik_v{{ traefik_version }}_linux_amd64.tar.gz"
-        dest: "/tmp/traefik_{{ traefik_version }}.tar.gz"
-      register: traefik_source
+- name: (sys) unpack traefik sources
+  unarchive:
+    copy: false
+    dest: "/tmp/"
+    src: "{{ traefik_source.dest }}"
+  register: traefik_source_unpack
 
-    - name: (sys) unpack traefik sources
-      unarchive:
-        copy: false
-        dest: "/tmp/"
-        src: "{{ traefik_source.dest }}"
-      register: traefik_source_unpack
+- name: (sys) copy binary to system
+  copy:
+    remote_src: true
+    src: "/tmp/traefik"
+    dest: "/usr/bin/traefik"
+    mode: "0755"
+    owner: "root"
+    group: "root"
 
-    - name: (sys) copy binary to system
-      copy:
-        remote_src: true
-        src: "/tmp/traefik"
-        dest: "/usr/bin/traefik"
-        mode: "0755"
-        owner: "root"
-        group: "root"
+- name: (sys) create needed folder for traefik
+  file:
+    path: "/etc/traefik"
+    state: directory
+    mode: "0755"
+    owner: "traefik"
+    group: "traefik"
 
-    - name: (sys) create needed folder for traefik
-      file:
-        path: "/etc/traefik"
-        state: directory
-        mode: "0755"
-        owner: "traefik"
-        group: "traefik"
+- name: (sys) create needed folder for traefik
+  file:
+    path: "/etc/traefik/dynamic"
+    state: directory
+    mode: "0755"
+    owner: "traefik"
+    group: "traefik"
 
-    - name: (sys) create needed folder for traefik
-      file:
-        path: "/etc/traefik/dynamic"
-        state: directory
-        mode: "0755"
-        owner: "traefik"
-        group: "traefik"
+- name: (sys) installing our traefik configuration
+  template:
+    src: "templates/traefik.yml.j2"
+    dest: "/etc/traefik/traefik.yml"
+    owner: "traefik"
+    group: "traefik"
+    mode: u+rw,g-wx,o-wx
 
-    - name: (sys) installing our traefik configuration
-      template:
-        src: "templates/traefik.yml.j2"
-        dest: "/etc/traefik/traefik.yml"
-        owner: "traefik"
-        group: "traefik"
-        mode: u+rw,g-wx,o-wx
+- name: (sys) installing systemd unit
+  template:
+    src: "templates/traefik.service.j2"
+    dest: "/lib/systemd/system/traefik.service"
+    owner: "root"
+    group: "root"
+    mode: a+x
 
-    - name: (sys) installing systemd unit
-      template:
-        src: "templates/traefik.service.j2"
-        dest: "/lib/systemd/system/traefik.service"
-        owner: "root"
-        group: "root"
-        mode: a+x
+- name: (sys) enabling traefik systemd unit file
+  systemd:
+    name: "traefik"
+    enabled: true
+    masked: false
 
-    - name: (sys) enabling traefik systemd unit file
-      systemd:
-        name: "traefik"
-        enabled: true
-        masked: false
-
-    - name: (sys) start traefik to the moon
-      systemd:
-        name: "traefik"
-        state: restarted
-        daemon_reload: true
+- name: (sys) start traefik to the moon
+  systemd:
+    name: "traefik"
+    state: restarted
+    daemon_reload: true
