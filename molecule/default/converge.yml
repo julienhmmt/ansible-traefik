@@ -1,4 +1,7 @@
 ---
 
 - name: Converge
-  import_playbook: ../../tasks/main.yml
+  hosts: all
+  become: true
+  roles:
+    - ansible-traefik
