@@ -16,20 +16,27 @@ TimeoutStopSec=300
 ExecStart=/usr/bin/traefik --configFile=/etc/traefik/traefik.yml
 WatchdogSec=1s
 
-# security - create separate, new (and empty) /tmp and /var/tmp filesystems
+## lock down system access
+# prohibit any operating system and configuration modification
+ProtectSystem=strict
+
+# create separate, new (and empty) /tmp and /var/tmp filesystems
 PrivateTmp=true
-# security - make /home directories inaccessible
+
+# make /home directories inaccessible
 ProtectHome=true
-# security - turns off access to physical devices (/dev/...)
+
+# turns off access to physical devices (/dev/...)
 PrivateDevices=true
-# security - make kernel settings (procfs and sysfs) read-only
+
+# make kernel settings (procfs and sysfs) read-only
 ProtectKernelTunables=true
-# security - make cgroups /sys/fs/cgroup read-only
+
+# make cgroups /sys/fs/cgroup read-only
 ProtectControlGroups=true
+
 # system - allow writing of acme.json
 ReadWritePaths=/etc/traefik/acme.json
-# system - limit number of processes in this unit
-LimitNPROC=1
 
 [Install]
 WantedBy=multi-user.target
