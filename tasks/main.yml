@@ -98,7 +98,7 @@
     dest: "/lib/systemd/system/traefik.service"
     owner: "root"
     group: "root"
-    mode: a+x
+    mode: "644"
 
 - name: (sys) enabling traefik systemd unit file
   systemd:
