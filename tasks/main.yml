@@ -68,6 +68,22 @@
     owner: "traefik"
     group: "traefik"
 
+- name: (sys) create needed file for traefik - lets encrypt
+  file:
+    path: "/etc/traefik/acme.json"
+    state: touch
+    mode: "0644"
+    owner: "traefik"
+    group: "traefik"
+
+- name: (sys) create needed file for traefik - logs
+  file:
+    path: "/var/log/traefik.log"
+    state: touch
+    mode: "0644"
+    owner: "traefik"
+    group: "traefik"
+
 - name: (sys) installing our traefik configuration
   template:
     src: "templates/traefik.yml.j2"
