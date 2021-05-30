@@ -49,8 +49,8 @@
     src: "/tmp/traefik"
     dest: "/usr/bin/traefik"
     mode: "0755"
-    owner: "root"
-    group: "root"
+    owner: "traefik"
+    group: "traefik"
 
 - name: (sys) create needed folder for traefik
   file:
