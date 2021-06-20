@@ -76,9 +76,17 @@
     owner: "traefik"
     group: "traefik"
 
+- name: (sys) create needed folder for traefik - logs
+  file:
+    path: "/var/log/traefik"
+    state: directory
+    mode: "0644"
+    owner: "traefik"
+    group: "traefik"
+
 - name: (sys) create needed file for traefik - logs
   file:
-    path: "/var/log/traefik.log"
+    path: "/var/log/traefik/main.log"
     state: touch
     mode: "0644"
     owner: "traefik"
