@@ -8,7 +8,6 @@ Little Ansible role to install Traefik from official GitHub repository, with a s
 
 - use handlers
 - create ansible tags
-- create a verify test/molecule
 - add your value!
 
 == Vars

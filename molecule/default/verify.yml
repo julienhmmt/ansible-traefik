@@ -2,4 +2,25 @@
 
 - name: Verify
   hosts: all
-# TODO
+  become: true
+  tasks:
+  - name: (check) Test if services are started and enabled
+    systemd:
+      name: "{{ item }}"
+      state: started
+      enabled: true
+    loop:
+      - traefik.service
+
+  - name: (check) Test if services ports are open and reachable
+    shell: "ss -ntlp | grep {{ item }}"
+    loop:
+      - 80
+      - 443
+      - 8080
+    changed_when: false
+
+  - name: (check) Test if Traefik web interface (dashboard) is OK
+    uri:
+      url: "http://localhost:8080/dashboard"
+      status_code: 200
