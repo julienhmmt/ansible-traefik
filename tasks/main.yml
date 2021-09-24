@@ -54,45 +54,27 @@
 
 - name: (sys) create needed folder for traefik
   file:
-    path: "/etc/traefik"
+    path: "{{ item }}"
     state: directory
     mode: "0755"
     owner: "traefik"
     group: "traefik"
+  loop:
+    - "/etc/traefik"
+    - "/etc/traefik/dynamic"
 
-- name: (sys) create needed folder for traefik
+- name: (sys) create needed files for traefik
   file:
-    path: "/etc/traefik/dynamic"
-    state: directory
-    mode: "0755"
-    owner: "traefik"
-    group: "traefik"
-
-- name: (sys) create needed file for traefik - lets encrypt
-  file:
-    path: "/etc/traefik/acme.json"
+    path: "{{ item }}"
     state: touch
     mode: "0644"
     owner: "traefik"
     group: "traefik"
+  loop:
+    - "/etc/traefik/acme.json"
+    - "/var/log/traefik.log"
 
-- name: (sys) create needed folder for traefik - logs
-  file:
-    path: "/var/log/traefik"
-    state: directory
-    mode: "0644"
-    owner: "traefik"
-    group: "traefik"
-
-- name: (sys) create needed file for traefik - logs
-  file:
-    path: "/var/log/traefik/main.log"
-    state: touch
-    mode: "0644"
-    owner: "traefik"
-    group: "traefik"
-
-- name: (sys) installing our traefik configuration
+- name: (sys) installing traefik configuration file
   template:
     src: "templates/traefik.yml.j2"
     dest: "/etc/traefik/traefik.yml"
