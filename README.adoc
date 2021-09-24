@@ -6,7 +6,6 @@ Little Ansible role to install Traefik from official GitHub repository, with a s
 
 == What remains to be done ?
 
-- use handlers
 - create ansible tags
 - add your value!
 
