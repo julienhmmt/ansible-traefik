@@ -107,15 +107,4 @@
     owner: "root"
     group: "root"
     mode: "644"
-
-- name: (sys) enabling traefik systemd unit file
-  systemd:
-    name: "traefik"
-    enabled: true
-    masked: false
-
-- name: (sys) start traefik to the moon
-  systemd:
-    name: "traefik"
-    state: restarted
-    daemon_reload: true
+  notify: start traefik
