@@ -7,7 +7,7 @@ galaxy_info:
 
   min_ansible_version: 2.9
 
-  role_name: install-traefik
+  role_name: traefik
 
   platforms:
     - name: Debian
