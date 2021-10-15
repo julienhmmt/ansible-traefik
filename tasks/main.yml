@@ -3,14 +3,14 @@
 
 - name: (sys) update host apt cache
   apt:
-    update_cache: true
     cache_valid_time: 3600
+    update_cache: true
 
 - name: (sys) install sys tools
   apt:
+    install_recommends: false
     name: "{{ item }}"
     state: present
-    install_recommends: false
   loop:
     - tar
     - curl
@@ -23,12 +23,12 @@
 
 - name: (sys) create traefik system user
   user:
-    name: "traefik"
-    system: "true"
-    shell: "/usr/sbin/nologin"
-    group: "traefik"
     createhome: "false"
+    group: "traefik"
     home: "/etc/traefik"
+    name: "traefik"
+    shell: "/usr/sbin/nologin"
+    system: "true"
 
 - name: (sys) download traefik sources
   get_url:
@@ -45,48 +45,48 @@
 
 - name: (sys) copy binary to system
   copy:
-    remote_src: true
-    src: "/tmp/traefik"
     dest: "/usr/bin/traefik"
+    group: "traefik"
     mode: "0755"
     owner: "traefik"
-    group: "traefik"
+    remote_src: true
+    src: "/tmp/traefik"
 
 - name: (sys) create needed folder for traefik
   file:
-    path: "{{ item }}"
-    state: directory
+    group: "traefik"
     mode: "0755"
     owner: "traefik"
-    group: "traefik"
+    path: "{{ item }}"
+    state: directory
   loop:
     - "/etc/traefik"
     - "/etc/traefik/dynamic"
 
 - name: (sys) create needed files for traefik
   file:
-    path: "{{ item }}"
-    state: touch
+    group: "traefik"
     mode: "0644"
     owner: "traefik"
-    group: "traefik"
+    path: "{{ item }}"
+    state: touch
   loop:
     - "/etc/traefik/acme.json"
     - "/var/log/traefik.log"
 
 - name: (sys) installing traefik configuration file
   template:
-    src: "templates/traefik.yml.j2"
     dest: "/etc/traefik/traefik.yml"
-    owner: "traefik"
     group: "traefik"
     mode: u+rw,g-wx,o-wx
+    owner: "traefik"
+    src: "templates/traefik.yml.j2"
 
 - name: (sys) installing systemd unit
   template:
-    src: "templates/traefik.service.j2"
     dest: "/lib/systemd/system/traefik.service"
-    owner: "root"
     group: "root"
     mode: "644"
+    owner: "root"
+    src: "templates/traefik.service.j2"
   notify: start traefik
