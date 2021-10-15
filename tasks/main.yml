@@ -89,4 +89,4 @@
     mode: "644"
     owner: "root"
     src: "templates/traefik.service.j2"
-  notify: start traefik
+  notify: restart traefik
