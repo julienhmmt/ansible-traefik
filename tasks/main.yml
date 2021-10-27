@@ -47,7 +47,7 @@
   copy:
     dest: "/usr/bin/traefik"
     group: "traefik"
-    mode: "0755"
+    mode: 0755
     owner: "traefik"
     remote_src: true
     src: "/tmp/traefik"
@@ -55,7 +55,7 @@
 - name: (sys) create needed folder for traefik
   file:
     group: "traefik"
-    mode: "0755"
+    mode: 0755
     owner: "traefik"
     path: "{{ item }}"
     state: directory
@@ -75,7 +75,7 @@
 - name: (sys) create needed files for traefik
   file:
     group: "traefik"
-    mode: "0644"
+    mode: 0644
     owner: "traefik"
     path: "{{ item }}"
     state: touch
@@ -96,7 +96,7 @@
   template:
     dest: "/lib/systemd/system/traefik.service"
     group: "root"
-    mode: "644"
+    mode: 644
     owner: "root"
     src: "templates/traefik.service.j2"
   notify: restart traefik
