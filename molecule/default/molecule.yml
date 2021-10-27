@@ -16,25 +16,10 @@ lint: |
 platforms:
   - name: traefik-ubuntu
     box: ubuntu/focal64
-    interfaces:
-      - auto_config: true
-        ip: 192.168.56.5
-        netmask: 24
-        network_name: private_network
   - name: traefik-debian
     box: debian/buster64
-    interfaces:
-      - auto_config: true
-        ip: 192.168.56.6
-        netmask: 24
-        network_name: private_network
   - name: traefik-debian11
     box: debian/bullseye64
-    interfaces:
-      - auto_config: true
-        ip: 192.168.56.7
-        netmask: 24
-        network_name: private_network
 
 provisioner:
   name: ansible
