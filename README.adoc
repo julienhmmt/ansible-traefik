@@ -4,11 +4,6 @@
 
 Little Ansible role to install Traefik from official GitHub repository, with a simple configuration.
 
-== What remains to be done ?
-
-- create ansible tags
-- add your value!
-
 == Vars
 
 Some variables are used in the file `main.yml`. Change the value of `traefik_version` and `traefik_log_file`, don't forget to use it in your configurations files.
@@ -19,34 +14,32 @@ Some variables are used in the file `main.yml`. Change the value of `traefik_ver
 
 Simple ! Use the venv.sh script to enter to the matrix (c).
 
-```bash
+[source, bash]
+----
 source venv.sh
-```
+----
 
 This virtualenv will bring you needed tools. You will in the virtualenv automatically. You are now ready to create virtual machines.
 
-```bash
-molecule create
-```
-
-And then use the playbook
-
-```bash
-molecule converge
-```
+[source, bash]
+----
+molecule create && molecule converge
+----
 
 When you're all set, destroy it.
 
-```bash
+[source, bash]
+----
 molecule destroy
-```
+----
 
 === Use this role in another ansible playbook
 
-*NEED FIX*
+Incorpore this role on your playbook, in the file `requirements.yml` and go !
 
-Incorpore this role on your playbook and go !
-
-```bash
-
-```
+[source, bash]
+----
+roles:
+  - src: git@github.com:Mettmett/ansible-traefik.git
+    scm: git
+----
