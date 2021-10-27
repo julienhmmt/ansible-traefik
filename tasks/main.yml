@@ -99,4 +99,10 @@
     mode: 644
     owner: "root"
     src: "templates/traefik.service.j2"
-  notify: restart traefik
+
+- name: (sys) start traefik
+  systemd:
+    daemon_reload: true
+    masked: false
+    name: traefik
+    state: started
