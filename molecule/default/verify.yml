@@ -1,19 +1,23 @@
 ---
 
 - name: Verify
+  become: true
   hosts: all
   tasks:
   - name: (check) Test if services are started and enabled
-    shell: "systemctl status traefik.service"
-    changed_when: false
+    systemd:
+      enabled: true
+      masked: false
+      name: "traefik"
+      state: started
 
   - name: (check) Test if services ports are open and reachable
-    shell: "ss -ntlp | grep {{ item }}"
+    wait_for:
+      port: "{{ item }}"
     loop:
       - 80
       - 443
       - 8080
-    changed_when: false
 
   - name: (check) Test if Traefik web interface (dashboard) is OK
     uri:
