@@ -96,7 +96,7 @@
   template:
     dest: "/lib/systemd/system/traefik.service"
     group: "root"
-    mode: 644
+    mode: 0644
     owner: "root"
     src: "templates/traefik.service.j2"
 
