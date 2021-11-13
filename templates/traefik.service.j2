@@ -28,10 +28,6 @@ ProtectKernelTunables=true
 ProtectSystem=strict
 RestrictNamespaces=true
 RestrictRealtime=true
-RestrictSUIDSGID=true
-
-# system - allow writing of acme.json
-ReadWritePaths=/etc/traefik/acme.json {{ traefik_log_file }}
 
 [Install]
 WantedBy=multi-user.target
