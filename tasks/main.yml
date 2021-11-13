@@ -63,25 +63,34 @@
     - "/etc/traefik"
     - "/etc/traefik/dynamic"
 
-- name: (sys) look if acme file for traefik exists
-  command: "ls {{ item }}"
-  register: acmefile
-  changed_when: "'No such file' in acmefile.stderr"
+- name: (sys) look if logs file for traefik exists
+  command: "ls /var/log/traefik.log"
+  register: logsfile
+  changed_when: "'No such file' in logsfile.stderr"
   ignore_errors: true
-  loop:
-    - /etc/traefik/acme.json
-    - /var/log/traefik.log
 
-- name: (sys) create needed files for traefik
+- name: (sys) create logs file for traefik if needed
   file:
     group: "traefik"
     mode: 0644
     owner: "traefik"
-    path: "{{ item }}"
+    path: "/var/log/traefik.log"
     state: touch
-  loop:
-    - /etc/traefik/acme.json
-    - /var/log/traefik.log
+  when: logsfile is changed
+
+- name: (sys) look if acme file for traefik exists
+  command: "ls /etc/traefik/acme.json"
+  register: acmefile
+  changed_when: "'No such file' in acmefile.stderr"
+  ignore_errors: true
+
+- name: (sys) create acme file for traefik if needed
+  file:
+    group: "traefik"
+    mode: 600
+    owner: "traefik"
+    path: "/etc/traefik/acme.json"
+    state: touch
   when: acmefile is changed
 
 - name: (sys) installing traefik configuration file
